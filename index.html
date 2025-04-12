@@ -1,33 +1,71 @@
 
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Player</title>
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-    <style>
-      body {
-        margin: 0;
-        background-color: black;
+<head>
+  <meta charset="utf-8" />
+  <title>MultiCanal Player</title>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <style>
+    body {
+      margin: 0;
+      background-color: black;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    #selector {
+      background-color: #111;
+      color: white;
+      font-size: 16px;
+      margin: 10px;
+      padding: 10px;
+      border: none;
+      border-radius: 4px;
+    }
+    video {
+      width: 100%;
+      height: 90vh;
+      background-color: black;
+    }
+  </style>
+</head>
+<body>
+  <select id="selector" onchange="changeChannel()">
+    <option value="https://televiva.net:19360/ccnlive/ccnlive.m3u8">TeleViva TV</option>
+    <option value="https://televiva.net:19360/ccnlive/ccnlive.m3u8">Canal 21-16</option>
+    <option value="https://televiva.net:19360/abtv/abtv.m3u8">Canal 21-4</option>
+  </select>
+
+  <video id="video" controls autoplay></video>
+
+  <script>
+    var video = document.getElementById('video');
+    var selector = document.getElementById('selector');
+    var hls;
+
+    function playStream(url) {
+      if (hls) {
+        hls.destroy();
       }
-      video {
-        width: 100%;
-        height: 100vh;
-        background-color: black;
-      }
-    </style>
-  </head>
-  <body>
-    <video id="video" controls autoplay></video>
-    <script>
+
       if (Hls.isSupported()) {
-        var video = document.getElementById('video');
-        var hls = new Hls();
-        hls.loadSource("https://televiva.net:19360/ccnlive/ccnlive.m3u8");
+        hls = new Hls();
+        hls.loadSource(url);
         hls.attachMedia(video);
-      } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-        video.src = "https://televiva.net:19360/ccnlive/ccnlive.m3u8";
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = url;
       }
-    </script>
-  </body>
+    }
+
+    function changeChannel() {
+      const selectedUrl = selector.value;
+      playStream(selectedUrl);
+    }
+
+    // Load the default selected channel
+    window.onload = function () {
+      playStream(selector.value);
+    };
+  </script>
+</body>
 </html>
