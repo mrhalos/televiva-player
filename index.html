@@ -3,41 +3,22 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>TeleViva TV</title>
+    <title>Player</title>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
       body {
         margin: 0;
         background-color: black;
-        color: white;
-        font-family: Arial, sans-serif;
-        text-align: center;
-      }
-      #header {
-        padding: 10px;
-        font-size: 20px;
-        font-weight: bold;
-        background-color: black;
       }
       video {
         width: 100%;
         height: 100vh;
-        z-index: 1;
-      }
-      #logo {
-        position: absolute;
-        bottom: 10px;
-        right: 10px;
-        width: 100px;
-        opacity: 0.9;
-        z-index: 2;
+        background-color: black;
       }
     </style>
   </head>
   <body>
-    <div id="header">🔴 EN VIVO - TeleViva TV</div>
     <video id="video" controls autoplay></video>
-    <img src="Televiva Horizontal MC panel.png" id="logo" />
     <script>
       if (Hls.isSupported()) {
         var video = document.getElementById('video');
