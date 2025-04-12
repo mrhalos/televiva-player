@@ -2,41 +2,134 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8" />
-  <title>TeleViva Channel Selector</title>
+  <meta charset="utf-8">
+  <title>TeleViva - Navegación con Contador</title>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <style>
     body {
       background-color: black;
       color: white;
       font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      padding: 20px;
     }
-    h1 {
-      margin-bottom: 30px;
-      font-size: 28px;
+    video {
+      width: 100%;
+      max-width: 800px;
+      height: 450px;
+      background-color: black;
+      display: none;
+      margin-bottom: 20px;
     }
-    .btn {
+    .controls {
+      display: flex;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    button {
+      padding: 15px 25px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
       background-color: #222;
       color: white;
-      padding: 15px 25px;
-      margin: 10px;
-      border: none;
-      font-size: 18px;
-      border-radius: 5px;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-block;
     }
-    .btn:hover {
+    button:hover {
       background-color: #444;
+    }
+    #channelDisplay {
+      margin-top: 10px;
+      font-size: 18px;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <h1>🔴 TeleViva - Selecciona un Canal</h1>
-  <a class="btn" href="solo1.html" target="_blank">TeleViva TV</a><br>
-  <a class="btn" href="solo2.html" target="_blank">Canal 21-16</a><br>
-  <a class="btn" href="solo3.html" target="_blank">Canal 21-4</a>
+
+  <video id="video" controls></video>
+
+  <div id="channelDisplay">Canal 1 / 3</div>
+
+  <div class="controls">
+    <button onclick="changeChannel(1)">UP</button>
+    <button onclick="togglePlay()">START / STOP</button>
+    <button onclick="changeChannel(-1)">DOWN</button>
+  </div>
+
+  <script>
+    var video = document.getElementById('video');
+    var channelDisplay = document.getElementById('channelDisplay');
+    var hls;
+    var isPlaying = false;
+
+    var channels = {
+      1: "https://televiva.net:19360/ccnlive/ccnlive.m3u8",
+      2: "https://televiva.net:19360/ccnlive/ccnlive.m3u8",
+      3: "https://televiva.net:19360/abtv/abtv.m3u8"
+    };
+
+    // Load saved channel or default to 1
+    var currentChannel = parseInt(localStorage.getItem('lastChannel')) || 1;
+    updateChannelDisplay();
+
+    function changeChannel(direction) {
+      if (direction === 1 && currentChannel < 3) {
+        currentChannel++;
+      } else if (direction === -1 && currentChannel > 1) {
+        currentChannel--;
+      }
+      localStorage.setItem('lastChannel', currentChannel);
+      updateChannelDisplay();
+      if (isPlaying) {
+        loadChannel();
+      }
+    }
+
+    function togglePlay() {
+      if (!isPlaying) {
+        loadChannel();
+        isPlaying = true;
+      } else {
+        stopStream();
+        isPlaying = false;
+      }
+    }
+
+    function loadChannel() {
+      video.style.display = 'block';
+      if (hls) {
+        hls.destroy();
+      }
+      if (Hls.isSupported()) {
+        hls = new Hls();
+        hls.loadSource(channels[currentChannel]);
+        hls.attachMedia(video);
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = channels[currentChannel];
+      }
+    }
+
+    function stopStream() {
+      if (hls) {
+        hls.destroy();
+        hls = null;
+      }
+      video.pause();
+      video.removeAttribute('src');
+      video.load();
+      video.style.display = 'none';
+    }
+
+    function updateChannelDisplay() {
+      channelDisplay.textContent = 'Canal ' + currentChannel + ' / 3';
+    }
+  </script>
+
 </body>
 </html>
