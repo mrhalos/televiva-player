@@ -8,39 +8,62 @@
   <style>
     body {
       margin: 0;
+      font-family: Arial, sans-serif;
       background-color: black;
       color: white;
-      font-family: Arial, sans-serif;
-      text-align: center;
+      display: flex;
+      height: 100vh;
     }
-    #selector {
+    #sidebar {
+      width: 200px;
       background-color: #111;
-      color: white;
-      font-size: 16px;
-      margin: 10px;
-      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      padding: 20px 10px;
+      box-sizing: border-box;
+    }
+    .channel-btn {
+      background-color: #222;
       border: none;
-      border-radius: 4px;
+      color: white;
+      padding: 10px;
+      margin: 5px 0;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+    .channel-btn:hover {
+      background-color: #444;
+    }
+    #content {
+      flex-grow: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: black;
     }
     video {
       width: 100%;
-      height: 90vh;
-      background-color: black;
+      height: 100%;
+      max-width: 100%;
+      max-height: 100%;
     }
   </style>
 </head>
 <body>
-  <select id="selector" onchange="changeChannel()">
-    <option value="https://televiva.net:19360/ccnlive/ccnlive.m3u8">TeleViva TV</option>
-    <option value="https://televiva.net:19360/ccnlive/ccnlive.m3u8">Canal 21-16</option>
-    <option value="https://televiva.net:19360/abtv/abtv.m3u8">Canal 21-4</option>
-  </select>
+  <div id="sidebar">
+    <button class="channel-btn" onclick="playStream('https://televiva.net:19360/ccnlive/ccnlive.m3u8')">TeleViva TV</button>
+    <button class="channel-btn" onclick="playStream('https://televiva.net:19360/ccnlive/ccnlive.m3u8')">Canal 21-16</button>
+    <button class="channel-btn" onclick="playStream('https://televiva.net:19360/abtv/abtv.m3u8')">Canal 21-4</button>
+  </div>
 
-  <video id="video" controls autoplay></video>
+  <div id="content">
+    <video id="video" controls autoplay></video>
+  </div>
 
   <script>
     var video = document.getElementById('video');
-    var selector = document.getElementById('selector');
     var hls;
 
     function playStream(url) {
@@ -57,14 +80,9 @@
       }
     }
 
-    function changeChannel() {
-      const selectedUrl = selector.value;
-      playStream(selectedUrl);
-    }
-
-    // Load the default selected channel
+    // Play default stream on load
     window.onload = function () {
-      playStream(selector.value);
+      playStream('https://televiva.net:19360/ccnlive/ccnlive.m3u8');
     };
   </script>
 </body>
