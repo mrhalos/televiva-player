@@ -1,116 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8">
+  <title>ABTV</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Remote M3U8 Stream App</title>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <style>
     body {
       margin: 0;
-      font-family: sans-serif;
+      background: #000;
       display: flex;
-      flex-direction: column;
-      height: 100vh;
-      background-color: #111;
-      color: white;
       align-items: center;
-      justify-content: space-between;
-    }
-    #video-container {
-      width: 100%;
-      max-width: 640px;
-      height: 40vh;
-      background: black;
+      justify-content: center;
+      height: 100vh;
     }
     video {
-      width: 100%;
-      height: 100%;
-    }
-    #channel-name {
-      margin: 10px 0;
-      font-size: 1.2em;
-      text-align: center;
-    }
-    .controls {
-      display: flex;
-      justify-content: space-around;
-      width: 100%;
-      padding: 20px;
-    }
-    button {
-      background-color: #333;
-      color: white;
-      padding: 10px 20px;
-      font-size: 1em;
-      border: none;
+      width: 95vw;
+      max-width: 640px;
+      aspect-ratio: 16 / 9;
       border-radius: 10px;
+      background: black;
     }
   </style>
 </head>
 <body>
 
-  <div id="video-container">
-    <video id="video" controls autoplay></video>
-  </div>
+  <video id="video" controls autoplay muted playsinline></video>
 
-  <div id="channel-name">Loading...</div>
-
-  <div class="controls">
-    <button onclick="prevChannel()">⬆ UP</button>
-    <button onclick="togglePlay()">⏯ Start/Stop</button>
-    <button onclick="nextChannel()">⬇ DOWN</button>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <script>
-    const channels = [
-      { name: "CCN Live", url: "https://televiva.net:19360/ccnlive/ccnlive.m3u8" },
-      { name: "ABTV", url: "https://televiva.net:19360/abtv/abtv.m3u8" },
-      { name: "TV Push", url: "https://televiva.net:19360/tv-push/tv-push.m3u8" }
-    ];
-
-    let currentChannel = 0;
     const video = document.getElementById('video');
-    const channelName = document.getElementById('channel-name');
-    let hls;
-
-    function loadChannel(index) {
-      const channel = channels[index];
-      channelName.textContent = channel.name;
-
-      if (hls) {
-        hls.destroy();
-      }
-
-      if (Hls.isSupported()) {
-        hls = new Hls();
-        hls.loadSource(channel.url);
-        hls.attachMedia(video);
-      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        video.src = channel.url;
-      }
+    if (Hls.isSupported()) {
+      const hls = new Hls();
+      hls.loadSource("https://televiva.net:19360/livestream/livestream.m3u8");
+      hls.attachMedia(video);
+    } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+      video.src = "https://televiva.net:19360/abtv/abtv.m3u8";
     }
-
-    function nextChannel() {
-      currentChannel = (currentChannel + 1) % channels.length;
-      loadChannel(currentChannel);
-    }
-
-    function prevChannel() {
-      currentChannel = (currentChannel - 1 + channels.length) % channels.length;
-      loadChannel(currentChannel);
-    }
-
-    function togglePlay() {
-      if (video.paused) {
-        video.play();
-      } else {
-        video.pause();
-      }
-    }
-
-    // Load the first channel initially
-    loadChannel(currentChannel);
   </script>
 
 </body>
