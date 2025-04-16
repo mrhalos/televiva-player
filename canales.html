@@ -1,0 +1,103 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Televiva - Canales en Vivo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #005baa;
+    }
+
+    .canal {
+      background: #fff;
+      padding: 15px;
+      margin: 15px auto;
+      max-width: 600px;
+      border-radius: 10px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      margin: 10px 0;
+      color: #333;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #005baa;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #007de6;
+    }
+
+    video {
+      width: 100%;
+      height: auto;
+      margin-top: 10px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📺 Canales Televiva en Vivo</h1>
+
+  <div class="canal">
+    <h2>CCN Live</h2>
+    <button onclick="reproducir('video1', 'https://televiva.net:19360/ccnlive/ccnlive.m3u8')">Ver Canal</button>
+    <video id="video1" controls></video>
+  </div>
+
+  <div class="canal">
+    <h2>ABTV</h2>
+    <button onclick="reproducir('video2', 'https://televiva.net:19360/abtv/abtv.m3u8')">Ver Canal</button>
+    <video id="video2" controls></video>
+  </div>
+
+  <div class="canal">
+    <h2>Televiva</h2>
+    <button onclick="reproducir('video3', 'https://televiva.net:19360/televiva/televiva.m3u8')">Ver Canal</button>
+    <video id="video3" controls></video>
+  </div>
+
+  <div class="canal">
+    <h2>Fashion TV</h2>
+    <button onclick="reproducir('video4', 'https://televiva.net:19360/fashion/fashion.m3u8')">Ver Canal</button>
+    <video id="video4" controls></video>
+  </div>
+
+  <script>
+    function reproducir(id, url) {
+      // Detener todos los reproductores
+      const videos = document.querySelectorAll('video');
+      videos.forEach(video => {
+        video.pause();
+        video.removeAttribute('src');
+        video.load();
+      });
+
+      // Reproducir solo el seleccionado
+      const selectedVideo = document.getElementById(id);
+      selectedVideo.src = url;
+      selectedVideo.load();
+      selectedVideo.play();
+    }
+  </script>
+
+</body>
+</html>
